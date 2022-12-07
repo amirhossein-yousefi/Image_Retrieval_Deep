@@ -134,3 +134,15 @@ def visualize_image(images, labels, index):
              bbox=dict(fill=False, edgecolor='red', linewidth=2))
     plt.axis('off')
     plt.show()
+
+
+def create_embedding(encoder, full_loader):
+    encoder.eval()
+    embed = []
+    device = get_default_device()
+    with torch.no_grad():
+        for batch_idx, (train_img, target_img) in enumerate(full_loader):
+            enc_output = encoder(train_img.to(device)).cpu()
+            embed.append(enc_output.reshape(enc_output.shape[0], -1))
+    embedding = torch.cat(embed, dim=0)
+    return embedding

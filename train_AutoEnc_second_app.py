@@ -16,7 +16,7 @@ def fit(epochs, model, train_loader, val_loader, opt_func=None):
     optimizer = opt_func
     valid_losses = []
     early_stopping = EarlyStopping(patience=20, verbose=True,
-                                   path='model_autoenc_app2_activation_relu_tanhenc_leakydec.pt')
+                                   path='model_autoenc_app2_activation_relu_tanhenc_modif.pt')
     for epoch in range(epochs):
         # Training Phase
         model.train()
@@ -50,10 +50,15 @@ if __name__ == '__main__':
 
     MEAN = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
     STD = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
+    # trans = transform = transforms.Compose(
+    #     [transforms.ToPILImage(),
+    #      transforms.ToTensor(),
+    #      transforms.Normalize(MEAN.tolist(), STD.tolist()),
+    #      ]
+    # )
     trans = transform = transforms.Compose(
         [transforms.ToPILImage(),
          transforms.ToTensor(),
-         transforms.Normalize(MEAN.tolist(), STD.tolist()),
          ]
     )
     full_dataset = SVHNDataset("./data", 'unlabelled_task3', transform=trans)  # Create folder dataset.
