@@ -1,7 +1,10 @@
-import torch
-
 from dataset_svhn import SVHNDataset
 from utils import EarlyStopping, get_default_device, to_device, DeviceDataLoader
+import torch
+from torch.utils.data import random_split
+from autoencoder_second_app import Autoencoder
+import torchvision.transforms as transforms
+from dataset_svhn import transform
 
 
 @torch.no_grad()
@@ -39,28 +42,8 @@ def fit(epochs, model, train_loader, val_loader, opt_func=None):
     return history
 
 
-if __name__ == '__main__':
-    # Simplified Training Script
-    import torch
-    import torch.optim as optim
-    import torchvision.transforms as T
-    from torch.utils.data import random_split
-    from autoencoder_second_app import Autoencoder
-    import torchvision.transforms as transforms
-
-    MEAN = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
-    STD = torch.tensor([0.5, 0.5, 0.5], dtype=torch.float32)
-    # trans = transform = transforms.Compose(
-    #     [transforms.ToPILImage(),
-    #      transforms.ToTensor(),
-    #      transforms.Normalize(MEAN.tolist(), STD.tolist()),
-    #      ]
-    # )
-    trans = transform = transforms.Compose(
-        [transforms.ToPILImage(),
-         transforms.ToTensor(),
-         ]
-    )
+def train():
+    trans = transform()
     full_dataset = SVHNDataset("./data", 'unlabelled_task3', transform=trans)  # Create folder dataset.
 
     val_size = 9000
@@ -90,3 +73,8 @@ if __name__ == '__main__':
     num_epochs = 250
     opt_func = torch.optim.AdamW(model.parameters(), lr=0.005)
     history = fit(num_epochs, model, train_dl, val_dl, opt_func)
+    return history
+
+
+if __name__ == '__main__':
+    train()
